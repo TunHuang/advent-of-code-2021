@@ -6,11 +6,7 @@ const inputArray = input.split('\n')
 
 const oceanFloor = [...new Array(1000)].map(() => new Array(1000).fill(0));
 
-const drawLines = (lines, floor) => lines.forEach(couple => {
-  const x1 = couple[0][0];
-  const y1 = couple[0][1];
-  const x2 = couple[1][0];
-  const y2 = couple[1][1];
+const drawLines = (lines, floor) => lines.forEach(([[x1, y1], [x2, y2]]) => {
   if (y1 === y2) {
     const [start, end] = [x1, x2].sort((a, b) => a - b);
     for (let i = start; i <= end; i++) {
