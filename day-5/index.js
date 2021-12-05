@@ -19,7 +19,7 @@ const drawLines = (lines, floor) => lines.forEach(([[x1, y1], [x2, y2]]) => {
     }
   } else { // Part 2
     for (let i = 0; i <= Math.abs(x1 - x2); i++) {
-      const x = x1 > x2 ? x1 - i : x1 + i;
+      const x = x1 > x2 ? x1 - i : x1 + i; // variant with Math.sign const x = x1 + Math.sign(x2 - x1) * i;
       const y = y1 > y2 ? y1 - i : y1 + i;
       floor[y][x]++;
     }
