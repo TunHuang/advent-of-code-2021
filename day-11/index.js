@@ -63,16 +63,16 @@ function energyStep(array) {
 
 function flashingRecursive(array, flashArray) {
   const newFlashingOctopus = [];
-  flashArray.forEach(cor => {
-    newFlashingOctopus.push(...flash(array, cor));
+  flashArray.forEach(coord => {
+    newFlashingOctopus.push(...flash(array, coord));
   });
   if (newFlashingOctopus.length > 0) {
     flashingRecursive(array, newFlashingOctopus);
   }
 }
 
-function flash(array, cor) {
-  const adjacents = getAdjacents(array, cor);
+function flash(array, coord) {
+  const adjacents = getAdjacents(array, coord);
   const newFlashingOctopus = [];
   adjacents.forEach(([y, x]) => {
     if (array[y][x] === 9) {
