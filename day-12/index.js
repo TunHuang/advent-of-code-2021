@@ -25,32 +25,25 @@ class CaveSystem {
     cave1.add(cave2);
     cave2.add(cave1);
   }
-  findAllPaths() {
-    const allPaths = [];
-    
-    function findPathHelper(cave, pathArray = [], visited = [], twice = false) {
-      const openLinked = cave.linkedTo.filter(linkedCave => linkedCave.name !== 'start' && !visited.find(visitedCave => visitedCave.name === linkedCave.name));
-      let linkedVisited = [];
-      if (!twice) {
-        linkedVisited = cave.linkedTo.filter(linkedCave => linkedCave.name !== 'start' && visited.find(visitedCave => visitedCave.name === linkedCave.name));
-      }
-      if (openLinked.length === 0 && linkedVisited.length === 0) {
-        return;
-      }
-      pathArray.push(cave.name);
-      if (cave.name === 'end') {
-        allPaths.push(pathArray);
-        return;
-      }
-      if (!cave.isBig && !visited.find(visitedCave => visitedCave.name === cave.name)) {
-        visited.push(cave);
-      }
-      openLinked.forEach(linkedCave => {
-        findPathHelper(linkedCave, [...pathArray], [...visited], twice);
-      });
-      linkedVisited.forEach(linkedVisitedCave => findPathHelper(linkedVisitedCave, [...pathArray], [...visited], true));
+  findAllPaths(cave = this.start, pathArray = [], visited = [], twice = false, allPaths = []) {
+    const openLinked = cave.linkedTo.filter(linkedCave => linkedCave !== this.start && !visited.find(visitedCave => visitedCave === linkedCave));
+    let linkedVisited = [];
+    if (!twice) {
+      linkedVisited = cave.linkedTo.filter(linkedCave => linkedCave !== this.start && visited.find(visitedCave => visitedCave === linkedCave));
     }
-    findPathHelper(this.start);
+    if (openLinked.length === 0 && linkedVisited.length === 0) {
+      return;
+    }
+    pathArray.push(cave.name);
+    if (cave.name === 'end') {
+      allPaths.push(pathArray);
+      return;
+    }
+    if (!cave.isBig && !visited.find(visitedCave => visitedCave === cave)) {
+      visited.push(cave);
+    }
+    openLinked.forEach(linkedCave => this.findAllPaths(linkedCave, [...pathArray], [...visited], twice, allPaths));
+    linkedVisited.forEach(linkedVisitedCave => this.findAllPaths(linkedVisitedCave, [...pathArray], [...visited], true, allPaths));
     return allPaths;
   }
 }
