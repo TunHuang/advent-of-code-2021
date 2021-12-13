@@ -3,16 +3,6 @@ const input = fs.readFileSync('input.txt').toString();
 
 const inputArray = input.split('\n').map(entry => entry.split('-'));
 
-const smallSample = `start-A
-start-b
-A-c
-A-b
-b-d
-A-end
-b-end`;
-const smallArray = smallSample.split('\n').map(entry => entry.split('-'));
-// console.log(smallArray);
-
 class CaveSystem {
   constructor() {
     this.start = new Cave('start');
@@ -38,9 +28,13 @@ class CaveSystem {
   findAllPaths() {
     const allPaths = [];
     
-    function findPath(cave, pathArray = [], visited = []) {
+    function findPathHelper(cave, pathArray = [], visited = [], twice = false) {
       const openLinked = cave.linkedTo.filter(linkedCave => linkedCave.name !== 'start' && !visited.find(visitedCave => visitedCave.name === linkedCave.name));
-      if (openLinked.length === 0) {
+      let linkedVisited = [];
+      if (!twice) {
+        linkedVisited = cave.linkedTo.filter(linkedCave => linkedCave.name !== 'start' && visited.find(visitedCave => visitedCave.name === linkedCave.name));
+      }
+      if (openLinked.length === 0 && linkedVisited.length === 0) {
         return;
       }
       pathArray.push(cave.name);
@@ -52,11 +46,11 @@ class CaveSystem {
         visited.push(cave);
       }
       openLinked.forEach(linkedCave => {
-
-        findPath(linkedCave, [...pathArray], [...visited]);
+        findPathHelper(linkedCave, [...pathArray], [...visited], twice);
       });
+      linkedVisited.forEach(linkedVisitedCave => findPathHelper(linkedVisitedCave, [...pathArray], [...visited], true));
     }
-    findPath(this.start);
+    findPathHelper(this.start);
     return allPaths;
   }
 }
@@ -64,8 +58,6 @@ class CaveSystem {
 class Cave {
   constructor(name) {
     this.name = name;
-/*     console.log('name:', name);
-    console.log('0:', name[0]); */
     this.isBig = name[0] === name[0].toUpperCase();
     this.linkedTo = [];
   }
@@ -79,6 +71,7 @@ class Cave {
 const caveSystem = new CaveSystem();
 console.log('after creation:', caveSystem);
 inputArray.forEach(connection => caveSystem.addConnection(connection));
-console.log('after for each:', caveSystem);
+console.log('after adding connections', caveSystem);
 const result = caveSystem.findAllPaths();
-console.log('number of paths:', result);
+// console.log('paths:', result);
+console.log('number of paths:', result.length);
